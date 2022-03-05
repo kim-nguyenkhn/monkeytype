@@ -29,7 +29,7 @@ function authenticateRequest(authOptions = DEFAULT_OPTIONS): Handler {
   ): Promise<void> => {
     try {
       const { authorization: authHeader } = req.headers;
-      let token: MonkeyTypes.DecodedToken = {};
+      let token: MonkeyTypes.DecodedToken;
 
       if (authHeader) {
         token = await authenticateWithAuthHeader(
@@ -75,6 +75,7 @@ function authenticateWithBody(
 
   return {
     uid,
+    email: "",
   };
 }
 
@@ -110,7 +111,7 @@ async function authenticateWithBearerToken(
 
     return {
       uid: decodedToken.uid,
-      email: decodedToken.email,
+      email: decodedToken.email ?? "",
     };
   } catch (error) {
     console.log("-----------");
@@ -154,7 +155,7 @@ async function authenticateWithApeKey(
 
     const keyOwner = (await UsersDAO.getUser(uid)) as MonkeyTypes.User;
     const targetApeKey = _.get(keyOwner.apeKeys, keyId);
-    const isKeyValid = await compare(apeKey, targetApeKey?.hash);
+    const isKeyValid = await compare(apeKey, targetApeKey?.hash ?? "");
 
     if (!isKeyValid) {
       throw new MonkeyError(400, "Invalid ApeKey");
