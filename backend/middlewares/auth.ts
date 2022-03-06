@@ -155,8 +155,13 @@ async function authenticateWithApeKey(
 
     const keyOwner = (await UsersDAO.getUser(uid)) as MonkeyTypes.User;
     const targetApeKey = _.get(keyOwner.apeKeys, keyId);
-    const isKeyValid = await compare(apeKey, targetApeKey?.hash ?? "");
 
+
+    if (!targetApeKey.enabled) {
+      throw new MonkeyError(400, "ApeKey is disabled");
+    }
+
+    const isKeyValid = await compare(apeKey, targetApeKey?.hash ?? "");
     if (!isKeyValid) {
       throw new MonkeyError(400, "Invalid ApeKey");
     }
