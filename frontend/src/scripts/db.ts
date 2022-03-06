@@ -152,7 +152,7 @@ export async function initSnapshot(): Promise<
 export async function getUserResults(accountName?: string): Promise<boolean> {
   let user = null;
   if (accountName) {
-    user = "kim-tester";
+    user = "newaccountname";
   } else {
     user = firebase.auth().currentUser;
   }
